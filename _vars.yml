@@ -1,0 +1,24 @@
+
+downloadfolder: "/home/ubuntu/k8stools"
+
+
+bin: /bin
+find: "{{ bin }}/find"
+grep: "{{ bin }}/grep"
+cut: "{{ bin }}/cut"
+
+trident_install_version: "20.01.0"
+trident_url: "https://github.com/NetApp/trident/releases/download/v{{ trident_install_version }}/trident-installer-{{ trident_install_version }}.tar.gz"
+trident_installer: "{{ downloadfolder }}/trident-installer"
+#trident_installer_setup: "{{ trident_installer }}/setup-dr"  # do a quick check to ensure backend*.json is current
+trident_installer_setup: "{{ trident_installer }}/setup"
+trident_namespace: "trident"
+tridentctl: "{{ trident_installer }}/tridentctl --namespace {{ trident_namespace }}"
+tridentread: "tridentread"
+trident_config:
+  ontapnas:
+    file: "{{ trident_installer_setup }}/backend.json"
+  ontapnaseco:
+    file: "{{ trident_installer_setup }}/backend-eco.json"
+  ontapnasinfra:
+    file: "{{ trident_installer_setup }}/backend-infra.json"

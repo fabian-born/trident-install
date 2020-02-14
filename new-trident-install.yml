@@ -1,0 +1,28 @@
+---
+- hosts: all
+  gather_facts: no
+
+  pre_tasks:
+    - name: Install Python if not already present.
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      changed_when: False
+- hosts: masters
+  gather_facts: no
+  vars_files:
+    - ./_vars.yml
+
+  tasks:
+  - file:
+      path: "{{ downloadfolder }}"
+      state: directory
+  - name: download file and force basic auth
+    get_url:
+      url: "{{ trident_url }}"
+      dest: "{{ downloadfolder }}"
+      force_basic_auth: yes
+  - name: Extract Archive
+    command: "tar -xzvf trident-installer-{{ trident_install_version }}.tar.gz"
+    args:
+      chdir: "{{ downloadfolder }}"
+  - name: Execute the install commands
+    shell: "cd {{ trident_installer }} && {{ tridentctl }} install"
